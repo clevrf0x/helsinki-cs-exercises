@@ -2,24 +2,27 @@ import PropTypes from 'prop-types';
 
 export default function App() {
   const course = 'Half Stack application development';
-  const part1 = {
-    name: 'Fundamentals of React',
-    exercises: 10,
-  };
-  const part2 = {
-    name: 'Using props to pass data',
-    exercises: 7,
-  };
-  const part3 = {
-    name: 'State of a component',
-    exercises: 14,
-  };
+  const parts = [
+    {
+      name: 'Fundamentals of React',
+      exercises: 10,
+    },
+    {
+      name: 'Using props to pass data',
+      exercises: 7,
+    },
+    {
+      name: 'State of a component',
+      exercises: 14,
+    },
+  ];
+  let total = parts.reduce((sum, part) => (sum += part.exercises), 0);
 
   return (
     <div>
       <Header course={course} />
-      <Content part1={part1} part2={part2} part3={part3} />
-      <Total total={part1.exercises + part2.exercises + part3.exercises} />
+      <Content parts={parts} />
+      <Total total={total} />
     </div>
   );
 }
@@ -32,19 +35,22 @@ Header.propTypes = {
   course: PropTypes.string.isRequired,
 };
 
-function Content({ part1, part2, part3 }) {
+function Content({ parts }) {
   return (
     <div>
-      <Part part={part1} />
-      <Part part={part2} />
-      <Part part={part3} />
+      {parts.map((part, index) => (
+        <Part key={index} part={part} />
+      ))}
     </div>
   );
 }
 Content.propTypes = {
-  part1: PropTypes.object.isRequired,
-  part2: PropTypes.object.isRequired,
-  part3: PropTypes.object.isRequired,
+  parts: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      exercises: PropTypes.number.isRequired,
+    })
+  ).isRequired,
 };
 
 function Part({ part }) {
@@ -55,7 +61,10 @@ function Part({ part }) {
   );
 }
 Part.propTypes = {
-  part: PropTypes.object.isRequired,
+  part: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    exercises: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 function Total({ total }) {
